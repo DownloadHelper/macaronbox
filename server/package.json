@@ -1,0 +1,21 @@
+{
+  "name": "macaronbox-server",
+  "version": "0.0.1",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cryptr": "^6.0.2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "lowdb": "^1.0.0",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dlh",
+  "license": "ISC"
+}
