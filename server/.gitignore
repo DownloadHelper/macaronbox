@@ -1,5 +1,8 @@
 node_modules
 client
+downloads
+
 config.js
 db.json
+
 .DS_Store

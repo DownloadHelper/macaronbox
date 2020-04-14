@@ -1,0 +1,30 @@
+<div class="home-wrapper" fxLayout="row" fxLayoutAlign="center center">
+    <mat-card *ngIf="files" fxFlex="80">
+        <mat-list>
+            <div mat-subheader>
+                <button *ngIf="currentPath != ''" (click)="goBack()" mat-icon-button color="accent">
+                    <mat-icon>arrow_backward</mat-icon>
+                </button>
+                <span>{{ currentPath != '' ? currentPath : 'Root'}}</span>
+            </div>
+            <div *ngFor="let file of files">
+                <mat-list-item (click)="getFolderFiles(file.path, file.isDir)" class="items">
+                    <mat-icon *ngIf="file.isDir" mat-list-icon>folder</mat-icon>
+                    <mat-icon *ngIf="!file.isDir" mat-list-icon>attachment</mat-icon>
+                    <div mat-line style="font-weight: 500;">{{ file.title }} </div>
+                    <div mat-line> {{ file.createdDate | date }} | {{ file.size }} | {{ file.originalName }}</div>
+                    <button *ngIf="!file.isDir" mat-icon-button color="accent">
+                        <mat-icon>cloud_download</mat-icon>
+                    </button>
+                    <button *ngIf="file.isDir" mat-icon-button color="accent">
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+    
+                    <mat-divider></mat-divider>
+                </mat-list-item>
+            </div>
+
+        </mat-list>
+    </mat-card>
+
+</div>

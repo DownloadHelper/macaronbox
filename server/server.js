@@ -15,6 +15,7 @@ const adapter = new FileSync('./db.json', {
   });
 const db = low(adapter);
 const passport = require('passport');
+const ptn = require('parse-torrent-name');
 const LocalStrategy = require('passport-local').Strategy;
 const auth = require('./middleware/authMiddleware');
 const isLoggedIn = require('./middleware/isLoggedInMiddleware');
@@ -59,6 +60,12 @@ app.use(function (req, res, next) {
  
 // make client folder accessible as static files when we call /
 app.use('/', express.static('client'));
+app.get('/login', function(req,res) {  
+    res.sendFile(path.join(__dirname+'/client/index.html'));
+});
+app.get('/home', function(req,res) {  
+    res.sendFile(path.join(__dirname+'/client/index.html'));
+});
 
 app.get('/api', function (req, res) {
   res.end('macaronbox api');
@@ -69,12 +76,43 @@ app.post('/api/authenticate', auth(), (req, res) => {
     res.status(200).json({"user" : req.user});
 });
 
-app.get('/api/data', isLoggedIn, (req, res) => {
-    res.json("data");
+app.get('/api/user', isLoggedIn, (req, res) => {
+    res.status(200).json({"user" : req.user});
+});
+
+app.get('/api/files', isLoggedIn, (req, res) => {
+    let path = config.filesPath;
+    if(req.query.path) path = path + req.query.path + '/';
+
+    fs.readdir(path, function (err, files) {
+        let results = [];
+        //handling error
+        if (err) {
+            console.log('Unable to scan directory: ' + err);
+            res.status(500).json({"message" : err});
+        } 
+        files.forEach(file => {
+            let filePath = path + file
+            let parsedFile = ptn(file);
+            parsedFile.path = req.query.path ? req.query.path + '/' + file : file;
+            parsedFile.originalName = file;
+            parsedFile.size = fs.statSync(filePath).size;
+            parsedFile.createdDate = fs.statSync(filePath).ctime;
+            parsedFile.isDir = fs.existsSync(filePath) && fs.lstatSync(filePath).isDirectory();
+            results.push(parsedFile);
+        });
+        res.status(200).json(results);
+    });
+});
+
+app.get('/api/files/download/:fileName', isLoggedIn, (req, res) => {
+    let fileName = req.params.fileName;
+    if(fileName) res.download(config.filesPath + fileName);
 });
  
 const PORT = config.port || 8081;
  
+
 app.listen(PORT, function () {
   console.log('Macaronbox server is running on port ' + PORT);
 });

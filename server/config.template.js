@@ -11,6 +11,7 @@ const CONFIG = {
     // A unique secret for signing messages with JWT (see https://jwt.io). Change
     // this to something unique and hard to guess.
     secret: 'macaronbox',
+    filesPath: '/opt/rtorrent/downloads/'
 };
 // Do not remove the below line.
 module.exports = CONFIG;

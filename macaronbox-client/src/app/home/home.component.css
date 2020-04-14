@@ -1,0 +1,19 @@
+.home-wrapper .mat-list-icon {
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.home-wrapper .mat-card{
+    margin-top: 40px;
+}
+
+.home-wrapper .mat-line {
+    padding-right: 25px;
+}
+
+.home-wrapper .items {
+    cursor: pointer;
+}
+
+.home-wrapper .items:hover {
+    background-color: #f3f3f3;
+}
