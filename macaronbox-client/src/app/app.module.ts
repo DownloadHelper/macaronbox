@@ -14,7 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
@@ -42,7 +43,8 @@ import { HomeComponent } from './home/home.component';
     MatInputModule,
     MatListModule,
     MatChipsModule,
-    MatExpansionModule,
+    MatSnackBarModule,
+    MatBadgeModule,
     MatFormFieldModule
   ],
   providers: [],

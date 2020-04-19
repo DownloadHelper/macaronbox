@@ -1,8 +1,10 @@
+import { CONFIG } from './../models/config';
 import { FileService } from './../services/file.service';
 import { environment } from './../../environments/environment';
 import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-home',
@@ -14,38 +16,89 @@ export class HomeComponent implements OnInit {
   files: any[];
   currentPath: string;
 
-  constructor(private authService: AuthService, private fileService: FileService, private router: Router) { }
+  videoExtensionList: string[] = ['mkv', 'avi', 'mts', 'm2ts', 'ts', 'mov', 'qt', 'wmv', 'amv', 'mp4', 'm4p', 'm4v', 
+                                  'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm2v'];
+
+  constructor(private authService: AuthService, private fileService: FileService, private router: Router, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.checkUser();
     this.getRootFiles();
   }
 
-  checkUser() {
-    this.authService.isAuth().subscribe(
-      res => {
 
+  getRootFiles() {
+    this.currentPath = '';
+    this.getFolderFiles(this.currentPath);
+  }
+
+  goToFolderOrDownload(folderPath:string, isDir:boolean) {
+    if(isDir) {
+      this.getFolderFiles(folderPath);
+    } else {
+      this.downloadFile(folderPath);
+    }
+  }
+
+  getFolderFiles(folderPath:string) {
+    this.currentPath = folderPath;
+    this.fileService.getFolderFiles(folderPath).subscribe(
+      res => {
+        this.files = res;
+        res.forEach(file => {
+          if(CONFIG.useParseTorrentName && CONFIG.useTmdbApi) {
+            let isMovie = (file.season || file.episode) ? false : true; 
+            if(!file.isDir) this.enrichFile(file.title, file.originalName, isMovie);
+          }
+        })
       },
       err => {
-        this.router.navigate(['login']);
+        if(err.status === 401) {
+          this.router.navigate(['login']);
+        } else {
+          this.snackBar.open(err.error, "OK");
+        }
       }
     )
   }
 
-  getRootFiles() {
-    this.currentPath = '';
-    this.getFolderFiles(this.currentPath, true);
+  downloadFile(filePath:string) {
+    this.fileService.downloadFile(filePath).subscribe(
+      res => {
+        window.location.href = environment.serverUrl + res;
+      },
+      err => {
+        if(err.status === 401) {
+          this.router.navigate(['login']);
+        } else {
+          this.snackBar.open(err.error, "OK");
+        }
+      }
+    )
   }
 
-  getFolderFiles(folderPath:string, isDir:boolean) {
-    if(isDir) {
-      this.currentPath = folderPath;
-      this.fileService.getFolderFiles(folderPath).subscribe(
+  enrichFile(fileName:string, originalName:string, isMovie:boolean = true) {
+    let extension = originalName.split('.').pop();
+    if(extension && this.videoExtensionList.includes(extension.toLocaleLowerCase())) {
+      this.fileService.enrichFile(fileName, isMovie).subscribe(
         res => {
-          this.files = res;
+          if(res) {
+            let fileToEnrich = this.files.find(file => file.originalName == originalName);
+            if(res.poster_path) {
+              fileToEnrich.poster = 'http://image.tmdb.org/t/p/w185/' + res.poster_path;
+            }
+            fileToEnrich.vote_average = res.vote_average;
+            fileToEnrich.release_date = res.release_date;
+            fileToEnrich.overview = res.overview;
+            fileToEnrich.release_date = res.release_date;
+            this.files = this.files.map(file => file.originalName == originalName ? fileToEnrich : file);
+          }
         },
         err => {
-          this.router.navigate(['login']);
+          if(err.status === 401) {
+            this.router.navigate(['login']);
+          } else {
+            this.snackBar.open(err.error, "OK");
+          }
         }
       )
     }
@@ -60,7 +113,7 @@ export class HomeComponent implements OnInit {
         path = splitPath.join('/');
       }
 
-      this.getFolderFiles(path, true);
+      this.getFolderFiles(path);
     }
   }
 }

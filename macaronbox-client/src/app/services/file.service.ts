@@ -17,4 +17,12 @@ export class FileService {
   getFolderFiles(folderPath: string): Observable<any[]> {
     return this.http.get<any[]>(environment.serverUrl + 'api/files?path=' + folderPath);
   }
+
+  enrichFile(fileName: string, isMovie: boolean = true): Observable<any> {
+    return this.http.get<any>(environment.serverUrl + 'api/files/enrich?fileName=' + fileName + '&isMovie=' + isMovie);
+  }
+
+  downloadFile(filePath: string): Observable<any> {
+    return this.http.get<any>(environment.serverUrl + 'api/files/download?path=' + filePath);
+  }
 }

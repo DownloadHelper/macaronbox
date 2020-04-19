@@ -8,10 +8,13 @@ const CONFIG = {
     // A unique secret for encrypt data into database. Change
     // this to something unique and hard to guess.
     secretDb: 'macaronboxDB',
-    // A unique secret for signing messages with JWT (see https://jwt.io). Change
+    // A unique secret for express session. Change
     // this to something unique and hard to guess.
     secret: 'macaronbox',
-    filesPath: '/opt/rtorrent/downloads/'
+    filesPath: '/opt/rtorrent/downloads/',
+    useParseTorrentName: true,
+    useTmdbApi: false,
+    tmdbApiKey: ''
 };
 // Do not remove the below line.
 module.exports = CONFIG;
