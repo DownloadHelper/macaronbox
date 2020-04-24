@@ -28,6 +28,15 @@ export class LoginComponent implements OnInit {
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    this.authService.isAuth().subscribe(
+      res => {
+        if(res.username && !res.isFirstAuth) {
+          this.router.navigate(['']);
+        } else if (res.username && res.isFirstAuth) {
+          this.showFistAuthForm = true;
+          this.loginForm.reset();
+        }
+      });
   }
 
   login() {
@@ -35,7 +44,6 @@ export class LoginComponent implements OnInit {
       this.message = null;
       this.authService.postAuth(this.loginForm.value).subscribe(
         res => {
-          console.log(res);
           if(!res.isFirstAuth) {
             this.router.navigate(['']);
           } else {

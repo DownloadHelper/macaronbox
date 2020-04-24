@@ -1,58 +1,82 @@
-<div class="home-wrapper" fxLayout="row" fxLayoutAlign="center center">
+<div class="home-wrapper" fxLayout="row" fxLayoutAlign="center center">   
+    <mat-form-field fxFlex="90" appearance="outline">
+        <input matInput type="text"  placeholder="Search" [(ngModel)]="searchModel" >
+        <button mat-button *ngIf="searchModel" matSuffix mat-icon-button aria-label="Clear" (click)="searchModel=''">
+            <mat-icon>close</mat-icon>
+        </button>
+        <mat-icon *ngIf="!searchModel" matSuffix>search</mat-icon>
+    </mat-form-field>
+</div>
+
+
+<div class="home-wrapper" fxLayout="row" fxLayoutAlign="center center">    
     <mat-card *ngIf="files" fxFlex="90" style="padding: 0px;">
         <mat-list>
             <div mat-subheader style="background-color: #e5e9ff;">
                 <button *ngIf="currentPath != ''" (click)="goBack()" mat-icon-button color="accent">
                     <mat-icon>arrow_backward</mat-icon>
                 </button>
-                <span [matBadge]="files?.length" matBadgeOverlap="false">{{ currentPath != '' ? '/' + currentPath : '/'}}</span>
+                <span [matBadge]="(files | fileFilter: searchModel)?.length" matBadgeOverlap="false">{{ currentPath != '' ? '/' + currentPath : '/'}}</span>
             </div>
 
-            <div *ngFor="let file of files">
-                <mat-list-item (click)="goToFolderOrDownload(file.path, file.isDir)" class="items">
-                    <mat-icon *ngIf="file.isDir" mat-list-icon>folder</mat-icon>
-                    <mat-icon *ngIf="!file.isDir" mat-list-icon>attachment</mat-icon>
+            <div *ngIf="isLoading" style="margin: 20px;">
+                <mat-spinner style="margin:0 auto;" ></mat-spinner>
+           
+            </div>
 
-                    <div mat-line style="font-weight: 500;">
-                        {{ file.title }} 
-                        <span *ngIf="file.season">
-                            S{{ file.season | number:'2.0' }}
-                        </span>
-                        <span *ngIf="file.episode">
-                            E{{ file.episode | number:'2.0' }}
-                        </span>
-                        <span *ngIf="file.release_date">
-                            ({{ file.release_date | date:'yyyy' }})
-                        </span>
-                        <span *ngIf="file.vote_average">
-                            - {{ file.vote_average }}<mat-icon style="font-size: 18px;"color="primary">star</mat-icon>
-                        </span>
-                    </div>
-
-                    <div mat-line *ngIf="file.overview" style="white-space: normal;font-style: italic;"> {{ file.overview }}</div>
-                    <div mat-line *ngIf="file.overview">&nbsp;</div>
-
-                    <div mat-line style="font-size: 12px;"> {{ file.createdDate | date:'shortDate' }} | {{ file.size }} | {{ file.originalName }}</div>
-
-                    <img *ngIf="file.poster" style="max-height: 150px;border-radius: 8px;" [src]="file.poster" alt="">
-
-                    <button *ngIf="!file.isDir" mat-icon-button color="accent" style="margin-left: 10px;">
-                        <mat-icon>cloud_download</mat-icon>
-                    </button>
-                    <button *ngIf="file.isDir" mat-icon-button color="accent" style="margin-left: 10px;">
-                        <mat-icon>arrow_forward</mat-icon>
-                    </button>
+            <div *ngIf="!isLoading">
+                <div *ngFor="let file of files | fileFilter: searchModel">
+                    <mat-list-item (click)="goToFolderOrDownload(file.path, file.isDir)" class="items">
+                        <mat-icon *ngIf="file.isDir" mat-list-icon>folder</mat-icon>
+                        <mat-icon *ngIf="!file.isDir" mat-list-icon>attachment</mat-icon>
     
-                    <mat-divider></mat-divider>
-                </mat-list-item>
-            </div>
-
-            <div *ngIf="files?.length === 0">
-                <mat-list-item class="items">
-                    <div mat-line style="font-weight: 500;">
-                        No file found
-                    </div>
-                </mat-list-item>
+                        <div mat-line style="font-weight: 500;">
+                            {{ file.title }} 
+                            <span *ngIf="file.season">
+                                S{{ file.season | number:'2.0-0' }}
+                            </span>
+                            <span *ngIf="file.episode">
+                                E{{ file.episode | number:'2.0-0' }}
+                            </span>
+                            <span *ngIf="file.episode_name">
+                                - {{ file.episode_name }}
+                            </span>
+                            <span *ngIf="file.release_date">
+                                ({{ file.release_date | date:'yyyy' }})
+                            </span>
+                            <span *ngIf="file.vote_average">
+                                - {{ file.vote_average | number:'1.1-1' }}<mat-icon style="font-size: 18px;"color="primary">star</mat-icon>
+                            </span>
+                        </div>
+    
+                        <div mat-line *ngIf="file.overview" style="white-space: normal;font-style: italic;"> {{ file.overview }}</div>
+                        <div mat-line *ngIf="file.overview">&nbsp;</div>
+    
+                        <div mat-line></div>
+                        <div mat-line></div>
+    
+                        <div mat-line style="font-size: 12px;"> {{ file.createdDate | date:'shortDate' }} | {{ file.size }} | {{ file.originalName }}</div>
+    
+                        <img *ngIf="file.poster" style="max-height: 150px;border-radius: 8px;" [src]="file.poster" alt="">
+    
+                        <button *ngIf="!file.isDir" mat-icon-button color="accent" style="margin-left: 10px;">
+                            <mat-icon>cloud_download</mat-icon>
+                        </button>
+                        <button *ngIf="file.isDir" mat-icon-button color="accent" style="margin-left: 10px;">
+                            <mat-icon>arrow_forward</mat-icon>
+                        </button>
+        
+                        <mat-divider></mat-divider>
+                    </mat-list-item>
+                </div>
+    
+                <div *ngIf="files?.length === 0">
+                    <mat-list-item class="items">
+                        <div mat-line style="font-weight: 500;">
+                            No file found
+                        </div>
+                    </mat-list-item>
+                </div>
             </div>
 
         </mat-list>

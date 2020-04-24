@@ -15,14 +15,19 @@ export class FileService {
   }
 
   getFolderFiles(folderPath: string): Observable<any[]> {
-    return this.http.get<any[]>(environment.serverUrl + 'api/files?path=' + folderPath);
+    return this.http.get<any[]>(environment.serverUrl + 'api/files?path=' + folderPath, { withCredentials: true });
   }
 
-  enrichFile(fileName: string, isMovie: boolean = true): Observable<any> {
-    return this.http.get<any>(environment.serverUrl + 'api/files/enrich?fileName=' + fileName + '&isMovie=' + isMovie);
+  enrichFile(fileName: string, isMovie: boolean = true, season?: string, episode?: string, year?: string): Observable<any> {
+    let queryParams = '';
+    if(season) queryParams = queryParams + '&season=' + season;
+    if(episode) queryParams = queryParams + '&episode=' + episode;
+    if(year) queryParams = queryParams + '&year=' + year;
+
+    return this.http.get<any>(environment.serverUrl + 'api/files/enrich?fileName=' + fileName + '&isMovie=' + isMovie + queryParams, {withCredentials: true});
   }
 
   downloadFile(filePath: string): Observable<any> {
-    return this.http.get<any>(environment.serverUrl + 'api/files/download?path=' + filePath);
+    return this.http.get<any>(environment.serverUrl + 'api/files/download?path=' + filePath, {withCredentials: true});
   }
 }

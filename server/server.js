@@ -21,6 +21,7 @@ const auth = require('./middleware/authMiddleware');
 const isLoggedIn = require('./middleware/isLoggedInMiddleware');
 const formatBytes = require('./utils/formatBytes');
 const enrichDataFile = require('./utils/enrichDataFile');
+const enrichTvShowFile = require('./utils/enrichTvShowFile');
 
 // initialize db
 if(db.get('users').value() == null) {
@@ -56,13 +57,14 @@ app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
  
-app.use(function (req, res, next) {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  next();
-});
+// ONLY FOR DEV
+// app.use(function (req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+//   res.setHeader('Access-Control-Allow-Methods', 'POST,DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   next();
+// });
 
 // make config file folder accessible as static files when we call /download
 app.use('/download', isLoggedIn, express.static(config.filesPath));
@@ -137,7 +139,7 @@ app.get('/api/files', isLoggedIn, (req, res) => {
                 parsedFile.size = formatBytes(fs.statSync(filePath).size);
                 parsedFile.createdDate = fs.statSync(filePath).ctime;
                 parsedFile.isDir = fs.existsSync(filePath) && fs.lstatSync(filePath).isDirectory();
-    
+
                 results.push(parsedFile);     
             });
             res.status(200).json(results);
@@ -147,16 +149,38 @@ app.get('/api/files', isLoggedIn, (req, res) => {
 
 app.get('/api/files/enrich', isLoggedIn, (req, res) => {
     let fileName = req.query.fileName;
+    let year = req.query.year;
+    let season = req.query.season;
+    let episode = req.query.episode;
     let isMovie = JSON.parse(req.query.isMovie);
     
     if(req.user.isFirstAuth) {
         res.sendStatus(401);
     } else {
-        enrichDataFile(fileName, isMovie).then((response) => {
-            let parsedRes = JSON.parse(response);
-            let find = parsedRes.total_results > 0 ? parsedRes.results[0] : null;
-           
-            res.status(200).json(find);
+        enrichDataFile(fileName, isMovie).then((searchResponse) => {
+            let parsedSearchRes = JSON.parse(searchResponse);
+            let find = null;
+            if(parsedSearchRes.total_results > 0) {
+                find = parsedSearchRes.results[0];
+                if(year) {
+                    let findWithYear = parsedSearchRes.results.find(res => res.release_date && res.release_date.includes(year));
+                    findWithYear != null ? find = findWithYear : null;
+                }
+            }
+
+            if(!isMovie && find && find.id && season && episode) {
+                enrichTvShowFile(find.id, season, episode).then((tvShowResponse) => {
+                    let parsedTvShowRes = JSON.parse(tvShowResponse);
+                    find.overview = parsedTvShowRes.overview;
+                    find.vote_average = parsedTvShowRes.vote_average;
+                    find.episode_air_date = parsedTvShowRes.air_date;
+                    find.episode_name = parsedTvShowRes.name;
+
+                    res.status(200).json(find);
+                });
+            } else {
+                res.status(200).json(find);
+            }
         }).catch((error) => {
             console.log(error);
             res.status(500).json(error);

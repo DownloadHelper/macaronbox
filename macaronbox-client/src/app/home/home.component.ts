@@ -13,8 +13,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class HomeComponent implements OnInit {
 
+  isLoading:boolean = false;
+
   files: any[];
   currentPath: string;
+
+  searchModel: string = '';
 
   videoExtensionList: string[] = ['mkv', 'avi', 'mts', 'm2ts', 'ts', 'mov', 'qt', 'wmv', 'amv', 'mp4', 'm4p', 'm4v', 
                                   'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm2v'];
@@ -33,6 +37,7 @@ export class HomeComponent implements OnInit {
 
   goToFolderOrDownload(folderPath:string, isDir:boolean) {
     if(isDir) {
+      this.searchModel = '';
       this.getFolderFiles(folderPath);
     } else {
       this.downloadFile(folderPath);
@@ -41,15 +46,28 @@ export class HomeComponent implements OnInit {
 
   getFolderFiles(folderPath:string) {
     this.currentPath = folderPath;
+    this.isLoading = true;
     this.fileService.getFolderFiles(folderPath).subscribe(
       res => {
         this.files = res;
         res.forEach(file => {
           if(CONFIG.useParseTorrentName && CONFIG.useTmdbApi) {
             let isMovie = (file.season || file.episode) ? false : true; 
-            if(!file.isDir) this.enrichFile(file.title, file.originalName, isMovie);
+            if(!file.isDir) {
+              if(file.season && file.episode) {
+                this.enrichFile(file.title, file.originalName, isMovie, file.year, file.season, file.episode);
+              } else {
+                this.enrichFile(file.title, file.originalName, isMovie, file.year);
+              }
+            } else {
+              this.isLoading = false;
+            }
+          } else {
+            this.isLoading = false;
           }
-        })
+        });
+
+        if(res.length === 0) this.isLoading = false;
       },
       err => {
         if(err.status === 401) {
@@ -76,10 +94,11 @@ export class HomeComponent implements OnInit {
     )
   }
 
-  enrichFile(fileName:string, originalName:string, isMovie:boolean = true) {
+  enrichFile(fileName:string, originalName:string, isMovie:boolean = true, year:string = null, season:string = null, episode:string = null) {
     let extension = originalName.split('.').pop();
+
     if(extension && this.videoExtensionList.includes(extension.toLocaleLowerCase())) {
-      this.fileService.enrichFile(fileName, isMovie).subscribe(
+      this.fileService.enrichFile(fileName, isMovie, season, episode, year).subscribe(
         res => {
           if(res) {
             let fileToEnrich = this.files.find(file => file.originalName == originalName);
@@ -89,9 +108,12 @@ export class HomeComponent implements OnInit {
             fileToEnrich.vote_average = res.vote_average;
             fileToEnrich.release_date = res.release_date;
             fileToEnrich.overview = res.overview;
-            fileToEnrich.release_date = res.release_date;
+            if(res.episode_air_date) fileToEnrich.release_date = res.episode_air_date;
+            if(res.episode_name) fileToEnrich.episode_name = res.episode_name;
+
             this.files = this.files.map(file => file.originalName == originalName ? fileToEnrich : file);
           }
+          this.isLoading = false;
         },
         err => {
           if(err.status === 401) {

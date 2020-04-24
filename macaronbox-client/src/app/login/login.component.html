@@ -1,6 +1,6 @@
 <div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center">
 
-    <mat-card *ngIf="!showFistAuthForm" class="box">
+    <mat-card *ngIf="!showFistAuthForm" [class]="message ? 'error box' : 'box'">
         <mat-card-header>
             <mat-card-title>Log in</mat-card-title>
             <mat-card-subtitle *ngIf="message">{{message}}</mat-card-subtitle>
@@ -20,7 +20,7 @@
         </form>
     </mat-card>
 
-    <mat-card *ngIf="showFistAuthForm" class="box">
+    <mat-card *ngIf="showFistAuthForm" [class]="message ? 'error box firstauth' : 'box firstauth'">
         <mat-card-header>
             <mat-card-title>Change default username and password</mat-card-title>
             <mat-card-subtitle *ngIf="message">{{message}}</mat-card-subtitle>

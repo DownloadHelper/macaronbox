@@ -2,7 +2,7 @@
     color: rgba(0, 0, 0, 0.54);
 }
 
-.home-wrapper .mat-card{
+.home-wrapper .mat-form-field {
     margin-top: 40px;
 }
 
