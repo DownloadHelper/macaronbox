@@ -1,16 +1,14 @@
 # Macaronbox
-A small web interface inspired by Cakebox-light written with Angular and NodeJS, to allows you to browse, manage and share the files you want.
+A small web interface inspired by [cakebox-light](https://github.com/cakebox/cakebox) written with Angular and NodeJS, to allows you to browse, manage and share the files you want.
+
 You can use it with [rtorrent](https://github.com/rakshasa/rtorrent) and [Flood UI](https://github.com/Flood-UI/flood) to easily share your downloads.
 
-## Screenshots
-With ParseTorrentName and TmdbApi :
-![alt text](screenshots/withPtnAndTmdbApi.png "withPtnAndTmdbApi")
-
-With only ParseTorrentName :
-![alt text](screenshots/withPtn.png "withPtn")
-
-Without ParseTorrentName :
-![alt text](screenshots/withoutPtn.png "withoutPtn")
+## Next features
+* [] Internationalization (i18n)
+* [] Manage users (add/delete/edit user)
+* [] Pagination
+* [] Caching
+...
 
 ## Getting started
 ### Pre-Requisites
@@ -19,11 +17,11 @@ Without ParseTorrentName :
 3. (OPTIONAL) themoviedb.org api key : create an account, go to https://www.themoviedb.org/settings/api and ask/get API Key (v3 auth).
 
 ### Installation
-1. git clone https://github.com/DownloadHelper/macaronbox.git
-2. cd macaronbox
-3. cd macaronbox-client && npm install
-4. npm run build:prod
-5. cd ../server && npm install
+1. `git clone https://github.com/DownloadHelper/macaronbox.git`
+2. `cd macaronbox`
+3. `cd macaronbox-client && npm install`
+4. `npm run build:prod`
+5. `cd ../server && npm install`
 
 ### Configuration
 1. In ./server copy `config.template.js` to `config.js` and review its comments. **This is required.**
@@ -53,3 +51,22 @@ Environment=NODE_ENV=production
 [Install]
 WantedBy=multi-user.target
 ```
+
+### Updating
+1. `git pull`
+2. check potential change into `config.template.js`
+3. kill the currently running macaronbox server
+4. rerun `npm install` into macaronbox-client and server
+5. rerun `npm run build:prod` into macaronbox-client
+6. restart server with `npm start`
+
+
+## Screenshots
+### With Parse Torrent Name and Tmdb Api
+![alt text](screenshots/withPtnAndTmdbApi.png "withPtnAndTmdbApi")
+
+### With only Parse Torrent Name
+![alt text](screenshots/withPtn.png "withPtn")
+
+### Without Parse Torrent Name
+![alt text](screenshots/withoutPtn.png "withoutPtn")
