@@ -8,6 +8,7 @@ You can use it with [rtorrent](https://github.com/rakshasa/rtorrent) and [Flood 
 * [] Manage users (add/delete/edit user)
 * [] Pagination
 * [] Caching
+* [] Real release process
 ...
 
 ## Getting started
@@ -36,6 +37,7 @@ Of course this is recommended to :
 1. Create a technical user `macaronbox` (with no ssh and no home, for example : `useradd -r -s /sbin/nologin macaronbox`)
 2. Change owner of macaron app (for example : `chown -R macaronbox:macaronbox ./macaronbox`)
 3. Create, enable and use service in `/etc/systemd/system`
+
 Service example `/etc/systemd/system/macaronbox.service` : 
 ```
 [Service]
@@ -52,6 +54,9 @@ Environment=NODE_ENV=production
 WantedBy=multi-user.target
 ```
 
+### Login
+For your first login you have to use default **admin** user. Username : admin / Password : admin.
+
 ### Updating
 1. `git pull`
 2. check potential change into `config.template.js`
@@ -60,6 +65,23 @@ WantedBy=multi-user.target
 5. rerun `npm run build:prod` into macaronbox-client
 6. restart server with `npm start`
 
+## Local Development
+1. Run `npm install` on **macaronbox-client** and **server**
+2. Run `npm start` on **macaronbox-client**
+3. Uncomment cors config on **server/server.js**
+```
+// ONLY FOR DEV
+// app.use(function (req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:4200');
+//   res.setHeader('Access-Control-Allow-Methods', 'POST,DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   next();
+// });
+```
+
+4. Run `npm start` or `nodemon server.js` on **server**
+5. Access to the front UI on your browser. Default is `http://localhost:4200`.
 
 ## Screenshots
 ### With Parse Torrent Name and Tmdb Api
