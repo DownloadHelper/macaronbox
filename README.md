@@ -4,7 +4,7 @@ A small web interface inspired by [cakebox-light](https://github.com/cakebox/cak
 You can use it with [rtorrent](https://github.com/rakshasa/rtorrent) and [Flood UI](https://github.com/Flood-UI/flood) to easily share your downloads.
 
 ## Next features
-* [] Internationalization (i18n)
+* [X] Internationalization (i18n)
 * [] Manage users (add/delete/edit user)
 * [] Pagination
 * [] Caching

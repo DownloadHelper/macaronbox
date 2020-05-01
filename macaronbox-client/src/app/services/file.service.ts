@@ -18,8 +18,9 @@ export class FileService {
     return this.http.get<any[]>(environment.serverUrl + 'api/files?path=' + folderPath, { withCredentials: true });
   }
 
-  enrichFile(fileName: string, isMovie: boolean = true, season?: string, episode?: string, year?: string): Observable<any> {
+  enrichFile(languageCode: string, fileName: string, isMovie: boolean = true, season?: string, episode?: string, year?: string): Observable<any> {
     let queryParams = '';
+    if(languageCode) queryParams = queryParams + '&language=' + languageCode;
     if(season) queryParams = queryParams + '&season=' + season;
     if(episode) queryParams = queryParams + '&episode=' + episode;
     if(year) queryParams = queryParams + '&year=' + year;

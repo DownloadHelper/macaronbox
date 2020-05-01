@@ -17,3 +17,7 @@
 .home-wrapper .items:hover {
     background-color: #f3f3f3;
 }
+
+.home-wrapper .mat-card {
+    margin-bottom: 40px;
+}

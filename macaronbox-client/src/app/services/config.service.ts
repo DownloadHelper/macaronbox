@@ -13,4 +13,8 @@ export class ConfigService {
   getConfig(): Observable<any> {
     return this.http.get<any>(environment.serverUrl + 'api/config');
   }
+
+  checkUpdate(): Observable<any> {
+    return this.http.get<any>(environment.serverUrl + 'api/checkupdate', { withCredentials: true });
+  }
 }

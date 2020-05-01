@@ -1,10 +1,10 @@
 const https = require('https');
 const config = require('../config');
 
-function enrichDataFile(fileName, isMovie = true) {
+function enrichDataFile(fileName, isMovie = true, language) {
     let type = isMovie ? 'movie' : 'tv';
     return new Promise((resolve, reject) => {https.get('https://api.themoviedb.org/3/search/' + type + '?api_key=' + config.tmdbApiKey 
-            + '&language=en-US&query=' + fileName 
+            + '&language=' + language + '&query=' + fileName 
             + '&page=1&include_adult=false', (response) => {
                 let chunks_of_data = [];
 

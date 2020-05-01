@@ -1,10 +1,24 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
+
     <mat-icon class="toolbar-icon">cake</mat-icon>
-    <span>{{ title }}</span>
+    <span>{{ title }} {{ version ? 'v' + version : '' }}</span>
+
     <span class="toolbar-spacer"></span>
-    <button (click)="logout()" mat-icon-button aria-label="Logout">
+
+    <button mat-button [matMenuTriggerFor]="menuLang">
+      {{ 'LANG.' + currentLang | translate }}
+      <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #menuLang="matMenu">
+      <button mat-menu-item *ngFor="let lang of langs" [value]="lang" (click)="changeLang(lang)">
+        {{ 'LANG.' + lang | translate }}
+      </button>
+    </mat-menu>
+
+    <button (click)="logout()" mat-button aria-label="Logout">
       <mat-icon>logout</mat-icon>
+      {{ 'LOGOUT' | translate }}
     </button>
   </mat-toolbar-row>
 </mat-toolbar>

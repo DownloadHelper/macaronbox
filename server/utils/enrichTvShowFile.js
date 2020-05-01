@@ -1,9 +1,9 @@
 const https = require('https');
 const config = require('../config');
 
-function enrichTvShowFile(tvId, season, episode) {
+function enrichTvShowFile(tvId, season, episode, language) {
     return new Promise((resolve, reject) => {https.get('https://api.themoviedb.org/3/tv/' + tvId + '/season/' + season + '/episode/' + episode 
-            + '?api_key=' + config.tmdbApiKey + '&language=en-US', (response) => {
+            + '?api_key=' + config.tmdbApiKey + '&language=' + language, (response) => {
                 let chunks_of_data = [];
 
                 // called when a data chunk is received.

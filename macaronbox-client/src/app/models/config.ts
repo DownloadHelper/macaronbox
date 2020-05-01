@@ -1,9 +1,11 @@
 interface Config {
     useParseTorrentName: boolean,
-    useTmdbApi: boolean
+    useTmdbApi: boolean,
+    version: string
 }
 
 export var CONFIG: Config = {
     useParseTorrentName: true,
-    useTmdbApi: false
+    useTmdbApi: false,
+    version: ''
 };

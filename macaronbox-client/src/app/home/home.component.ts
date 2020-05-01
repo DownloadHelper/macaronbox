@@ -1,10 +1,11 @@
+import { ConfigService } from './../services/config.service';
 import { CONFIG } from './../models/config';
 import { FileService } from './../services/file.service';
 import { environment } from './../../environments/environment';
-import { AuthService } from './../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
@@ -23,12 +24,26 @@ export class HomeComponent implements OnInit {
   videoExtensionList: string[] = ['mkv', 'avi', 'mts', 'm2ts', 'ts', 'mov', 'qt', 'wmv', 'amv', 'mp4', 'm4p', 'm4v', 
                                   'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm2v'];
 
-  constructor(private authService: AuthService, private fileService: FileService, private router: Router, private snackBar: MatSnackBar) { }
+  constructor(private translate: TranslateService, private fileService: FileService, private configService: ConfigService, 
+              private router: Router, private snackBar: MatSnackBar) {
+
+    translate.onLangChange.subscribe((event: LangChangeEvent) => {
+      this.getFolderFiles(this.currentPath);
+    });
+   }
 
   ngOnInit(): void {
     this.getRootFiles();
+    this.checkUpdate();
   }
 
+  checkUpdate() {
+    this.configService.checkUpdate().subscribe(res => {
+      if(res.version > CONFIG.version) {
+        this.snackBar.open("New version (v" + res.version + ") is available", "OK");
+      }
+    });
+  }
 
   getRootFiles() {
     this.currentPath = '';
@@ -98,7 +113,7 @@ export class HomeComponent implements OnInit {
     let extension = originalName.split('.').pop();
 
     if(extension && this.videoExtensionList.includes(extension.toLocaleLowerCase())) {
-      this.fileService.enrichFile(fileName, isMovie, season, episode, year).subscribe(
+      this.fileService.enrichFile(this.translate.instant("LANGUAGE_CODE"), fileName, isMovie, season, episode, year).subscribe(
         res => {
           if(res) {
             let fileToEnrich = this.files.find(file => file.originalName == originalName);

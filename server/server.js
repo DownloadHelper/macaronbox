@@ -1,8 +1,10 @@
 const config = require('./config');
+const package = require('./package.json');
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
+const https = require('https');
 const app = express();
 var fs = require('fs');
 const Cryptr = require("cryptr");
@@ -37,7 +39,7 @@ passport.use(new LocalStrategy(
             authRes.isFirstAuth = user.password === 'admin' ? true : false;
             return done(null, authRes);
         } else {
-            return done("unauthorized access", false);
+            return done("ERROR.LOGIN_FAILED", false);
         }
     }
 ));
@@ -86,6 +88,7 @@ app.get('/api/config', (req, res) => {
     let configDTO = new Object();
     configDTO.useParseTorrentName = config.useParseTorrentName;
     configDTO.useTmdbApi = config.useTmdbApi;
+    configDTO.version = package.version;
     res.status(200).json(configDTO);
 });
 
@@ -112,7 +115,7 @@ app.post('/api/user', isLoggedIn, (req, res) => {
         let updatedUser = db.get('users').find({ username: req.body.username }).value();
         res.status(200).json(updatedUser.username);
     } else {
-        res.status(400).json({"message" : "you have to change default username and password"});
+        res.status(400).json({"message" : "ERROR.FIRST_LOGIN_CHANGE_FAILED"});
     }
 });
 
@@ -149,6 +152,7 @@ app.get('/api/files', isLoggedIn, (req, res) => {
 
 app.get('/api/files/enrich', isLoggedIn, (req, res) => {
     let fileName = req.query.fileName;
+    let language = req.query.language;
     let year = req.query.year;
     let season = req.query.season;
     let episode = req.query.episode;
@@ -157,7 +161,7 @@ app.get('/api/files/enrich', isLoggedIn, (req, res) => {
     if(req.user.isFirstAuth) {
         res.sendStatus(401);
     } else {
-        enrichDataFile(fileName, isMovie).then((searchResponse) => {
+        enrichDataFile(fileName, isMovie, language).then((searchResponse) => {
             let parsedSearchRes = JSON.parse(searchResponse);
             let find = null;
             if(parsedSearchRes.total_results > 0) {
@@ -169,7 +173,7 @@ app.get('/api/files/enrich', isLoggedIn, (req, res) => {
             }
 
             if(!isMovie && find && find.id && season && episode) {
-                enrichTvShowFile(find.id, season, episode).then((tvShowResponse) => {
+                enrichTvShowFile(find.id, season, episode, language).then((tvShowResponse) => {
                     let parsedTvShowRes = JSON.parse(tvShowResponse);
                     find.overview = parsedTvShowRes.overview;
                     find.vote_average = parsedTvShowRes.vote_average;
@@ -196,6 +200,30 @@ app.get('/api/files/download', isLoggedIn, (req, res) => {
         if(req.query.path) path = "download/" + req.query.path;
         if(path) res.status(200).json(path);
     }
+});
+
+app.get('/api/checkupdate', isLoggedIn, (req, res) => {
+    https.get('https://raw.githubusercontent.com/DownloadHelper/macaronbox/master/server/package.json', (response) => {
+        let chunks_of_data = [];
+
+        // called when a data chunk is received.
+        response.on('data', (chunk) => {
+            chunks_of_data.push(chunk);
+        });
+
+        // called when the complete response is received.
+        response.on('end', () => {
+            let response_body = Buffer.concat(chunks_of_data);
+            let githubPackage = JSON.parse(response_body.toString());
+            let checkUpdateDTO = new Object();
+            checkUpdateDTO.version = githubPackage.version;
+            res.status(200).json(checkUpdateDTO);
+        });
+        response.on('error', (error) => {
+            console.log(error);
+            res.status(500).json(error);
+        });
+    });
 });
  
 const PORT = config.port || 8081;

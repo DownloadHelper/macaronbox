@@ -1,6 +1,6 @@
 <div class="home-wrapper" fxLayout="row" fxLayoutAlign="center center">   
     <mat-form-field fxFlex="90" appearance="outline">
-        <input matInput type="text"  placeholder="Search" [(ngModel)]="searchModel" >
+        <input matInput type="text"  placeholder="{{ 'SEARCH' | translate }}" [(ngModel)]="searchModel" >
         <button mat-button *ngIf="searchModel" matSuffix mat-icon-button aria-label="Clear" (click)="searchModel=''">
             <mat-icon>close</mat-icon>
         </button>

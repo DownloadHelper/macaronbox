@@ -2,41 +2,41 @@
 
     <mat-card *ngIf="!showFistAuthForm" [class]="message ? 'error box' : 'box'">
         <mat-card-header>
-            <mat-card-title>Log in</mat-card-title>
-            <mat-card-subtitle *ngIf="message">{{message}}</mat-card-subtitle>
+            <mat-card-title>{{ 'LOGIN' | translate }}</mat-card-title>
+            <mat-card-subtitle *ngIf="message">{{ message | translate }}</mat-card-subtitle>
         </mat-card-header>
 
         <form [formGroup]="loginForm" (ngSubmit)="login()" class="example-form">
             <mat-card-content>
                 <mat-form-field appearance="outline" class="example-full-width">
-                    <input matInput type="text" placeholder="Username" formControlName="username" required>
+                    <input matInput type="text" placeholder="{{ 'USERNAME' | translate }}" formControlName="username" required>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="example-full-width">
-                    <input matInput type="password" placeholder="Password" formControlName="password" required>
+                    <input matInput type="password" placeholder="{{ 'PASSWORD' | translate }}" formControlName="password" required>
                 </mat-form-field>
             </mat-card-content>
-            <button mat-raised-button color="accent" class="btn-block">Log in</button>
+            <button mat-raised-button color="accent" class="btn-block">{{ 'LOGIN' | translate }}</button>
         </form>
     </mat-card>
 
     <mat-card *ngIf="showFistAuthForm" [class]="message ? 'error box firstauth' : 'box firstauth'">
         <mat-card-header>
-            <mat-card-title>Change default username and password</mat-card-title>
-            <mat-card-subtitle *ngIf="message">{{message}}</mat-card-subtitle>
+            <mat-card-title>{{ 'FIRST_LOGIN_TITLE' | translate }}</mat-card-title>
+            <mat-card-subtitle *ngIf="message">{{ message | translate }}</mat-card-subtitle>
         </mat-card-header>
 
         <form [formGroup]="editForm" (ngSubmit)="editUser()" class="example-form">
             <mat-card-content>
                 <mat-form-field appearance="outline" class="example-full-width">
-                    <input matInput type="text" placeholder="Username" formControlName="username" required>
+                    <input matInput type="text" placeholder="{{ 'USERNAME' | translate }}" formControlName="username" required>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="example-full-width">
-                    <input matInput type="password" placeholder="Password" formControlName="password" required>
+                    <input matInput type="password" placeholder="{{ 'PASSWORD' | translate }}" formControlName="password" required>
                 </mat-form-field>
             </mat-card-content>
-            <button mat-raised-button color="accent" class="btn-block">Change</button>
+            <button mat-raised-button color="accent" class="btn-block">{{ 'FIRST_LOGIN_BTN' | translate }}</button>
         </form>
     </mat-card>
 </div>

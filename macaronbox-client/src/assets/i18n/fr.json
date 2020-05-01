@@ -1,0 +1,18 @@
+{
+    "LANGUAGE_CODE": "fr-FR",
+    "LANG": {
+        "en": "Anglais",
+        "fr": "Français"
+    },
+    "ERROR": {
+        "LOGIN_FAILED": "Mauvais nom d'utilisateur et/ou mot de passe",
+        "FIRST_LOGIN_CHANGE_FAILED": "Vous devez changer le nom d'utilisateur et le mot de passe par défaut"
+    },
+    "LOGIN": "Se connecter",
+    "LOGOUT": "Déconnexion",
+    "USERNAME": "Nom d'utilisateur",
+    "PASSWORD": "Mot de passe",
+    "FIRST_LOGIN_TITLE": "Changer le nom d'utilisateur et le mot de passe par défaut",
+    "FIRST_LOGIN_BTN": "Changer",
+    "SEARCH": "Chercher"
+}

@@ -1,0 +1,18 @@
+{
+    "LANGUAGE_CODE": "en-US",
+    "LANG": {
+        "en": "English",
+        "fr": "French"
+    },
+    "ERROR": {
+        "LOGIN_FAILED": "Wrong username and / or password",
+        "FIRST_LOGIN_CHANGE_FAILED": "You have to change default username and password"
+    },
+    "LOGIN": "Login",
+    "LOGOUT": "Logout",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "FIRST_LOGIN_TITLE": "Change default username and password",
+    "FIRST_LOGIN_BTN": "Change",
+    "SEARCH": "Search"
+}

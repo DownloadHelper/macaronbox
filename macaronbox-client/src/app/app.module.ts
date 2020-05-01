@@ -17,12 +17,20 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HomeComponent } from './home/home.component';
 import { FileFilterPipe } from './pipes/file-filter.pipe';
+import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -39,6 +47,14 @@ import { FileFilterPipe } from './pipes/file-filter.pipe';
     AppRoutingModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'en',
+      loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+      }
+    }),
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
@@ -49,7 +65,8 @@ import { FileFilterPipe } from './pipes/file-filter.pipe';
     MatSnackBarModule,
     MatBadgeModule,
     MatProgressSpinnerModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]
