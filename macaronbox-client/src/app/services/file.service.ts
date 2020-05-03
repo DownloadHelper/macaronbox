@@ -27,9 +27,5 @@ export class FileService {
 
     return this.http.get<any>(environment.serverUrl + 'api/files/enrich?fileName=' + fileName + '&isMovie=' + isMovie + queryParams, {withCredentials: true});
   }
-
-  downloadFile(filePath: string): Observable<any> {
-    return this.http.get<any>(environment.serverUrl + 'api/files/download?path=' + filePath,
-                              {withCredentials: true, responseType: 'blob' as 'json', observe: 'response'});
-  }
+  
 }

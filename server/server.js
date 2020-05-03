@@ -79,6 +79,9 @@ app.get('/login', function(req,res) {
 app.get('/home', function(req,res) {  
     res.sendFile(path.join(__dirname+'/client/index.html'));
 });
+app.get('/home/stream', function(req,res) {  
+    res.sendFile(path.join(__dirname+'/client/index.html'));
+});
 
 app.get('/api', function (req, res) {
   res.end('macaronbox api');
@@ -192,15 +195,6 @@ app.get('/api/files/enrich', isLoggedIn, (req, res) => {
     }
 });
 
-app.get('/api/files/download', isLoggedIn, (req, res) => {
-    let file;
-    if(req.user.isFirstAuth) {
-        res.sendStatus(401);
-    } else {
-        if(req.query.path) file = config.filesPath + req.query.path;
-        if(file) res.status(200).download(file);
-    }
-});
 
 app.get('/api/checkupdate', isLoggedIn, (req, res) => {
     https.get('https://raw.githubusercontent.com/DownloadHelper/macaronbox/master/server/package.json', (response) => {

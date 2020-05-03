@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { ConfigService } from './../services/config.service';
 import { CONFIG } from './../models/config';
 import { FileService } from './../services/file.service';
@@ -102,20 +103,8 @@ export class HomeComponent implements OnInit {
 
   downloadFile(fileName:string, filePath:string) {
     this.isLoadingDownload = true;
-    this.fileService.downloadFile(filePath).subscribe(
-      res => {
-        // trick to force download
-        this.forceDownloadFile(res.body, fileName, res.body.type);
-      },
-      err => {
-        this.isLoadingDownload = false;
-        if(err.status === 401) {
-          this.router.navigate(['login']);
-        } else {
-          this.snackBar.open(err.error, "OK");
-        }
-      }
-    )
+    // trick to force download
+    this.forceDownloadFile(filePath, fileName);
   }
 
   streamFile(fileName:string, fileTitle:string, filePath:string) {
@@ -167,10 +156,11 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  forceDownloadFile(data, name = 'file', type = 'text/plain') {
+  forceDownloadFile(filePath:string, fileName:string) {
     const anchor = document.createElement('a');
-    anchor.href = window.URL.createObjectURL(new Blob([data], { type }));
-    anchor.download = name;
+    anchor.href = environment.serverUrl + 'download/' + filePath;
+    anchor.download = fileName;
+    anchor.target = '_self';
     anchor.click();
     this.isLoadingDownload = false;
   }
