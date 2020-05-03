@@ -3,6 +3,13 @@ A small web interface inspired by [cakebox-light](https://github.com/cakebox/cak
 
 You can use it with [rtorrent](https://github.com/rakshasa/rtorrent) and [Flood UI](https://github.com/Flood-UI/flood) to easily share your downloads.
 
+## Screenshots
+### With Parse Torrent Name and Tmdb Api (in config)
+![alt text](screenshots/withPtnAndTmdbApi.png "withPtnAndTmdbApi")
+
+### When streaming is possible (.mp4 file)
+![alt text](screenshots/stream.png "whenStreaming")
+
 ## Next features
 * [X] Internationalization (i18n)
 * [X] Check new version
@@ -85,13 +92,3 @@ For your first login you have to use default **admin** user. Username : admin / 
 
 4. Run `npm start` or `nodemon server.js` on **server**
 5. Access to the front UI on your browser. Default is `http://localhost:4200`.
-
-## Screenshots
-### With Parse Torrent Name and Tmdb Api
-![alt text](screenshots/withPtnAndTmdbApi.png "withPtnAndTmdbApi")
-
-### With only Parse Torrent Name
-![alt text](screenshots/withPtn.png "withPtn")
-
-### Without Parse Torrent Name
-![alt text](screenshots/withoutPtn.png "withoutPtn")
