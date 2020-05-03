@@ -193,12 +193,12 @@ app.get('/api/files/enrich', isLoggedIn, (req, res) => {
 });
 
 app.get('/api/files/download', isLoggedIn, (req, res) => {
-    let path;
+    let file;
     if(req.user.isFirstAuth) {
         res.sendStatus(401);
     } else {
-        if(req.query.path) path = "download/" + req.query.path;
-        if(path) res.status(200).json(path);
+        if(req.query.path) file = config.filesPath + req.query.path;
+        if(file) res.status(200).download(file);
     }
 });
 

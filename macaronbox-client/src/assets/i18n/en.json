@@ -14,5 +14,6 @@
     "PASSWORD": "Password",
     "FIRST_LOGIN_TITLE": "Change default username and password",
     "FIRST_LOGIN_BTN": "Change",
-    "SEARCH": "Search"
+    "SEARCH": "Search",
+    "DOWNLOAD": "Download"
 }

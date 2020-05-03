@@ -1,0 +1,8 @@
+.stream-wrapper .mat-card {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.stream-wrapper .mat-card-content {
+    text-align:center;
+}

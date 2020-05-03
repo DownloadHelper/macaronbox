@@ -26,6 +26,7 @@ import { HomeComponent } from './home/home.component';
 import { FileFilterPipe } from './pipes/file-filter.pipe';
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
 import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import { StreamComponent } from './home/stream/stream.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -37,7 +38,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppComponent,
     LoginComponent,
     HomeComponent,
-    FileFilterPipe
+    FileFilterPipe,
+    StreamComponent
   ],
   imports: [
     BrowserModule,

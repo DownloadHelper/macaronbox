@@ -1,7 +1,6 @@
 import { ConfigService } from './../services/config.service';
 import { CONFIG } from './../models/config';
 import { FileService } from './../services/file.service';
-import { environment } from './../../environments/environment';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -15,6 +14,7 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 export class HomeComponent implements OnInit {
 
   isLoading:boolean = false;
+  isLoadingDownload:boolean = false;
 
   files: any[];
   currentPath: string;
@@ -23,6 +23,9 @@ export class HomeComponent implements OnInit {
 
   videoExtensionList: string[] = ['mkv', 'avi', 'mts', 'm2ts', 'ts', 'mov', 'qt', 'wmv', 'amv', 'mp4', 'm4p', 'm4v', 
                                   'mpg', 'mp2', 'mpeg', 'mpe', 'mpv', 'm2v'];
+
+
+  streamExtensionList: string[] = ['mp4'];
 
   constructor(private translate: TranslateService, private fileService: FileService, private configService: ConfigService, 
               private router: Router, private snackBar: MatSnackBar) {
@@ -50,12 +53,15 @@ export class HomeComponent implements OnInit {
     this.getFolderFiles(this.currentPath);
   }
 
-  goToFolderOrDownload(folderPath:string, isDir:boolean) {
+  goToFolderOrDownload(fileName:string, fileTitle:string, folderPath:string, isDir:boolean) {
+    let extension = fileName.split('.').pop();
     if(isDir) {
       this.searchModel = '';
       this.getFolderFiles(folderPath);
+    } else if(this.streamExtensionList.includes(extension.toLocaleLowerCase())) {
+      this.streamFile(fileName, fileTitle, folderPath);
     } else {
-      this.downloadFile(folderPath);
+      this.downloadFile(fileName, folderPath);
     }
   }
 
@@ -94,12 +100,15 @@ export class HomeComponent implements OnInit {
     )
   }
 
-  downloadFile(filePath:string) {
+  downloadFile(fileName:string, filePath:string) {
+    this.isLoadingDownload = true;
     this.fileService.downloadFile(filePath).subscribe(
       res => {
-        window.location.href = environment.serverUrl + res;
+        // trick to force download
+        this.forceDownloadFile(res.body, fileName, res.body.type);
       },
       err => {
+        this.isLoadingDownload = false;
         if(err.status === 401) {
           this.router.navigate(['login']);
         } else {
@@ -107,6 +116,10 @@ export class HomeComponent implements OnInit {
         }
       }
     )
+  }
+
+  streamFile(fileName:string, fileTitle:string, filePath:string) {
+    this.router.navigate(['home/stream'], { queryParams: { fileName: fileName, fileTitle: fileTitle, filePath: filePath } });
   }
 
   enrichFile(fileName:string, originalName:string, isMovie:boolean = true, year:string = null, season:string = null, episode:string = null) {
@@ -152,5 +165,13 @@ export class HomeComponent implements OnInit {
 
       this.getFolderFiles(path);
     }
+  }
+
+  forceDownloadFile(data, name = 'file', type = 'text/plain') {
+    const anchor = document.createElement('a');
+    anchor.href = window.URL.createObjectURL(new Blob([data], { type }));
+    anchor.download = name;
+    anchor.click();
+    this.isLoadingDownload = false;
   }
 }

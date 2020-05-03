@@ -1,8 +1,10 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
 
-    <mat-icon class="toolbar-icon">cake</mat-icon>
-    <span>{{ title }} {{ version ? 'v' + version : '' }}</span>
+    <div routerLink="/home" style="cursor: pointer;">
+      <mat-icon class="toolbar-icon">cake</mat-icon>
+      <span>{{ title }} {{ version ? 'v' + version : '' }}</span>
+    </div>
 
     <span class="toolbar-spacer"></span>
 

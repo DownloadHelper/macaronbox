@@ -29,6 +29,7 @@ export class FileService {
   }
 
   downloadFile(filePath: string): Observable<any> {
-    return this.http.get<any>(environment.serverUrl + 'api/files/download?path=' + filePath, {withCredentials: true});
+    return this.http.get<any>(environment.serverUrl + 'api/files/download?path=' + filePath,
+                              {withCredentials: true, responseType: 'blob' as 'json', observe: 'response'});
   }
 }

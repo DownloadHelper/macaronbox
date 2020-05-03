@@ -1,3 +1,7 @@
+<div *ngIf="isLoadingDownload" id="overlay">
+    <mat-spinner color="accent" style="margin:auto; top: 50%;" ></mat-spinner>
+</div>
+
 <div class="home-wrapper" fxLayout="row" fxLayoutAlign="center center">   
     <mat-form-field fxFlex="90" appearance="outline">
         <input matInput type="text"  placeholder="{{ 'SEARCH' | translate }}" [(ngModel)]="searchModel" >
@@ -26,7 +30,7 @@
 
             <div *ngIf="!isLoading">
                 <div *ngFor="let file of files | fileFilter: searchModel">
-                    <mat-list-item (click)="goToFolderOrDownload(file.path, file.isDir)" class="items">
+                    <mat-list-item (click)="goToFolderOrDownload(file.originalName, file.title, file.path, file.isDir)" class="items">
                         <mat-icon *ngIf="file.isDir" mat-list-icon>folder</mat-icon>
                         <mat-icon *ngIf="!file.isDir" mat-list-icon>attachment</mat-icon>
     
@@ -61,6 +65,9 @@
     
                         <button *ngIf="!file.isDir" mat-icon-button color="accent" style="margin-left: 10px;">
                             <mat-icon>cloud_download</mat-icon>
+                        </button>
+                        <button *ngIf="!file.isDir && file.originalName.split('.').pop() === 'mp4'" mat-icon-button color="accent">
+                            <mat-icon>ondemand_video</mat-icon>
                         </button>
                         <button *ngIf="file.isDir" mat-icon-button color="accent" style="margin-left: 10px;">
                             <mat-icon>arrow_forward</mat-icon>

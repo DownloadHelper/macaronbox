@@ -5,6 +5,9 @@ You can use it with [rtorrent](https://github.com/rakshasa/rtorrent) and [Flood 
 
 ## Next features
 * [X] Internationalization (i18n)
+* [X] Check new version
+* [X] Stream when it's possible (mp4 only for now)
+* [] Download all folder (as zip or tar)
 * [] Manage users (add/delete/edit user)
 * [] Pagination
 * [] Caching
