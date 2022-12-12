@@ -6,7 +6,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cryptr": "^6.0.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.0",
     "lowdb": "^1.0.0",
     "parse-torrent-name": "^0.5.4",
